@@ -1,138 +1,168 @@
-class Producto {
-    constructor(nombre, precio) {
-        this.nombre = nombre;
-        this.precio = precio;
-    }
+// ==========================
+// Array de productos
+// ==========================
+const productos = [
+    { id: 1, nombre: "Perfume A", precio: 9500, stock: 10 },
+    { id: 2, nombre: "Perfume B", precio: 15000, stock: 8 },
+    { id: 3, nombre: "Perfume C", precio: 9000, stock: 12 },
+    { id: 4, nombre: "Perfume D", precio: 11000, stock: 6 },
+    { id: 5, nombre: "Perfume E", precio: 10000, stock: 15 }
+];
+
+// ==========================
+// Array del carrito
+// ==========================
+let carrito = [];
+
+// ==========================
+// Funciones
+// ==========================
+
+// 1. Ver todos los productos
+function verProductos() {
+    let mensaje = "📦 Productos disponibles:\n";
+    productos.forEach((producto) => {
+        mensaje += `- ${producto.nombre} - $${producto.precio} (Stock: ${producto.stock})\n`;
+    });
+    alert(mensaje);
 }
 
-class Carrito {
-    constructor() {
-        this.productos = [];
+// 2. Ver productos en oferta (menores a $10.000)
+function verOfertas() {
+    const productosEnOferta = productos.filter(p => p.precio < 10000);
+    if (productosEnOferta.length === 0) {
+        alert("No hay productos en oferta en este momento.");
+        return;
     }
-
-    agregarProductos(producto) {
-        this.productos.push(producto);
-    }
-
-    quitarProducto(nombreProducto) {
-        let encontrado = false;
-        for (let i = 0; i < this.productos.length; i++) {
-            if (this.productos[i].nombre.toLowerCase() === nombreProducto.toLowerCase()) {
-                this.productos.splice(i, 1);
-                alert(`Producto "${nombreProducto}" eliminado del carrito.`);
-                encontrado = true;
-                break;
-            }
-        }
-        if (!encontrado) {
-            alert(`No se encontró el producto "${nombreProducto}" en el carrito.`);
-        }
-    }
-
-    mostrarListado() {
-        if (this.productos.length === 0) {
-            alert("El carrito está vacío.");
-        } else {
-            let mensaje = "Productos en el carrito:\n";
-            for (let i = 0; i < this.productos.length; i++) {
-                mensaje += `- ${this.productos[i].nombre} - $${this.productos[i].precio}\n`;
-            }
-            alert(mensaje);
-        }
-    }
-
-    generarTotal() {
-        let total = 0;
-        for (let i = 0; i < this.productos.length; i++) {
-            total += this.productos[i].precio;
-        }
-        return total;
-    }
+    let mensaje = "🔥 Productos en oferta:\n";
+    productosEnOferta.forEach((producto) => {
+        mensaje += `- ${producto.nombre} - $${producto.precio}\n`;
+    });
+    alert(mensaje);
 }
 
-function solicitarProductoYAgregarAlCarrito(carrito) {
-    const nombre = prompt("Ingresá el nombre del producto:");
-    if (nombre === "") {
-        alert("El nombre no puede estar vacío.");
+// 3. Agregar productos al carrito
+function agregarAlCarrito() {
+    const nombre = prompt("Ingresá el nombre del producto que querés agregar:");
+    const producto = productos.find(p => p.nombre.toLowerCase() === nombre.toLowerCase());
+
+    if (!producto) {
+        alert("❌ Producto no encontrado.");
         return;
     }
 
-    const precioIngresado = prompt("Ingresá el precio del producto:");
-    const precio = precioIngresado * 1;
+    const cantidad = parseInt(prompt(`¿Cuántas unidades de "${producto.nombre}" querés agregar?`));
 
-    if (precioIngresado === "" || precio <= 0) {
-        alert("El precio ingresado no es válido. Ingresá un número mayor a 0.");
+    if (isNaN(cantidad) || cantidad <= 0) {
+        alert("❌ Cantidad inválida.");
         return;
     }
 
-    const nuevoProducto = new Producto(nombre, precio);
-    carrito.agregarProductos(nuevoProducto);
-    alert(`Producto "${nombre}" agregado al carrito por $${precio}.`);
-}
-
-function solicitarEliminarProducto(carrito) {
-    const nombre = prompt("Ingresá el nombre del producto que querés eliminar:");
-    if (nombre === "") {
-        alert("Tenés que ingresar un nombre.");
+    if (cantidad > producto.stock) {
+        alert(`❌ No hay suficiente stock. Stock disponible: ${producto.stock}`);
         return;
     }
-    carrito.quitarProducto(nombre);
+
+    carrito.push({ ...producto, cantidad });
+    alert(`✅ Se agregaron ${cantidad} unidad(es) de "${producto.nombre}" al carrito.`);
 }
 
-function buscarProductoEnCarrito(carrito) {
-    const nombre = prompt("Ingresá el nombre del producto a buscar:");
-    let encontrado = false;
-
-    for (let i = 0; i < carrito.productos.length; i++) {
-        if (carrito.productos[i].nombre.toLowerCase() === nombre.toLowerCase()) {
-            alert(`El producto "${nombre}" está en el carrito.`);
-            encontrado = true;
-            break;
-        }
-    }
-
-    if (!encontrado) {
-        alert(`El producto "${nombre}" no está en el carrito.`);
+// 4. Ver productos en el carrito
+function verCarrito() {
+    if (carrito.length === 0) {
+        alert("El carrito está vacío.");
+    } else {
+        const listado = carrito
+            .map(producto => `- ${producto.nombre} ($${producto.precio}) - Cantidad: ${producto.cantidad}`)
+            .join("\n");
+        alert("Productos en tu carrito:\n" + listado);
     }
 }
 
-function mostrarTotalConDescuento(carrito) {
-    const total = carrito.generarTotal();
+
+// 5. Eliminar producto del carrito
+function eliminarProductoPorID() {
+    if (carrito.length === 0) {
+        alert("El carrito está vacío. No hay productos para eliminar.");
+        return;
+    }
+
+    const idIngresado = parseInt(prompt("Ingresá el ID del producto que querés eliminar:"));
+
+    if (isNaN(idIngresado)) {
+        alert("El ID ingresado no es válido.");
+        return;
+    }
+
+    const index = carrito.findIndex(producto => producto.id === idIngresado);
+
+    if (index !== -1) {
+        const eliminado = carrito.splice(index, 1)[0];
+        alert(`Producto "${eliminado.nombre}" eliminado del carrito.`);
+    } else {
+        alert("No se encontró ningún producto con ese ID en el carrito.");
+    }
+}
+
+// 6. Ver total con posible descuento
+function verTotal() {
+    if (carrito.length === 0) {
+        alert("🛒 El carrito está vacío.");
+        return;
+    }
+
+    const total = carrito.reduce((acc, item) => acc + item.precio * item.cantidad, 0);
+
     if (total > 10000) {
         const descuento = total * 0.1;
-        alert(`Total: $${total}\n¡Obtuviste un 10% de descuento!\nTotal final: $${total - descuento}`);
+        const totalConDescuento = total - descuento;
+        alert(`💰 Total: $${total}\n🎉 Descuento aplicado (10%): -$${descuento}\n💳 Total final: $${totalConDescuento}`);
     } else {
-        alert(`Total del carrito: $${total}`);
+        alert(`💳 Total del carrito: $${total}`);
     }
 }
 
 // ==========================
 // Menú principal
 // ==========================
+let opcion;
 
-const carrito = new Carrito();
-let opcion = prompt(
-    "Seleccioná una opción:\n1. Agregar producto\n2. Eliminar producto\n3. Buscar producto\n4. Ver carrito\n5. Ver total\n6. Salir"
-);
+do {
+    opcion = prompt(
+        "Seleccioná una opción:\n" +
+        "1. Ver productos\n" +
+        "2. Ver productos en oferta\n" +
+        "3. Agregar producto al carrito\n" +
+        "4. Ver carrito\n" +
+        "5. Eliminar producto del carrito\n" +
+        "6. Ver total\n" +
+        "7. Salir"
+    );
 
-while (opcion !== "6") {
-    if (opcion === "1") {
-    solicitarProductoYAgregarAlCarrito(carrito);
-    } else if (opcion === "2") {
-    solicitarEliminarProducto(carrito);
-    } else if (opcion === "3") {
-    buscarProductoEnCarrito(carrito);
-    } else if (opcion === "4") {
-    carrito.mostrarListado();
-    } else if (opcion === "5") {
-    mostrarTotalConDescuento(carrito);
-    } else {
-    alert("Opción inválida. Ingresá un número del 1 al 6.");
+    switch (opcion) {
+        case "1":
+            verProductos();
+            break;
+        case "2":
+            verOfertas();
+            break;
+        case "3":
+            agregarAlCarrito();
+            break;
+        case "4":
+            verCarrito();
+            break;
+        case "5":
+            eliminarProductoPorID();
+            break;
+        case "6":
+            verTotal();
+            break;
+        case "7":
+            alert("👋 ¡Gracias por tu compra!");
+            break;
+        default:
+            alert("❌ Opción inválida.");
     }
 
-    opcion = prompt(
-    "Seleccioná una opción:\n1. Agregar producto\n2. Eliminar producto\n3. Buscar producto\n4. Ver carrito\n5. Ver total\n6. Salir"
-    );
-}
-
-alert("¡Gracias por usar el carrito!");
+} while (opcion !== "7");
