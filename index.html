@@ -3,15 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <title>F.P.FRAGANCIAS</title>
 </head>
 <body>
-<h1>CARRITO F.P.FRAGANCIAS</h1>
-<div>
-    <ul>
-PRODUCTOS
-    </ul>
-</div>
+<h1>🛍️ CARRITO F.P. FRAGANCIAS</h1>
+<!--Bueno, para la entrega final le sumamos a nuestro proyecto un poco de css y html.
+    El nombre de F.P. FRAGANCIAS es un proyecto real al cual despues le voy a hacer una pagina.
+    Entiendo que lo importante en la entrega es mas el tema de la funcionalidad de las cosas que la estetica en si, así que decidi darle un toque un poco no tan habitual donde en la misma pagina tenemos los productos con sus ofertas, el carrito, el total y el botón de salir.
+    Al proyecto se le sumo un localstorage para que cuando se cierre el navegador quede almacenado todo lo que uno seleccionó.
+    Tambien se implemementaron los sweetalert para darle más visual al proyecto, se añadieron más comentarios para entender el java, css y html del proyecto.
+    Se hicieron tarjetas para los productos, cada vez que se elimina o se agrega un producto el stock y la cantidad se modifican.
+    Cuando salis del carrito utiliando el botón se refresca la pagina y se arrancaría de cero, se le dio un estilo al carrito para poder visualizar todo lo que uno agrega.
+    Y para finalizar las funciones que ya tenía el proyecto se fueron modificando y puliendo según las necesidades. Gracias!-->
+
+<nav>
+    <!-- Botonera de acciones -->
+    <div class="botones">
+        <button id="btnVerProductos">Ver productos 👀</button>
+        <button id="btnVerOfertas">Ver ofertas 🔥</button>
+        <button id="btnVerCarrito">Ver carrito 🛒</button>
+        <button id="btnTotal">Ver total 💰</button>
+        <button id="btnSalir">Salir 📤</button>
+    </div>
+</nav>
+
+
+
+
+    <!-- Secciones para mostrar información -->
+    <section>
+    <h2>📦 PRODUCTOS DISPONIBLES</h2>
+    <div id="listaProductos"></div>
+</section>
+
+
+<section id="carritoSection" style="display: none;">
+<h2>🛒 CARRITO DE COMPRAS</h2>
+<ul id="listaCarrito"></ul>
+</section>
+
 
 
     <script src="app.js"></script>
